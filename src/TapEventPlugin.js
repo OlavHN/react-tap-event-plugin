@@ -32,16 +32,6 @@ var topLevelTypes = EventConstants.topLevelTypes;
 var isStartish = EventPluginUtils.isStartish;
 var isEndish = EventPluginUtils.isEndish;
 
-var isTouch = function(topLevelType) {
-  var touchTypes = [
-    topLevelTypes.topTouchCancel,
-    topLevelTypes.topTouchEnd,
-    topLevelTypes.topTouchStart,
-    topLevelTypes.topTouchMove
-  ];
-  return touchTypes.indexOf(topLevelType) >= 0;
-}
-
 /**
  * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
  * in order to still be considered a 'tap' event.
@@ -93,8 +83,8 @@ if (EventPluginUtils.useTouchEvents) {
 var eventTypes = {
   touchTap: {
     phasedRegistrationNames: {
-      bubbled: keyOf({onTouchTap: null}),
-      captured: keyOf({onTouchTapCapture: null})
+      bubbled: keyOf({onTap: null}),
+      captured: keyOf({onTapCapture: null})
     },
     dependencies: dependencies
   }
@@ -122,13 +112,7 @@ var TapEventPlugin = {
       topLevelTargetID,
       nativeEvent) {
 
-    if (isTouch(topLevelType)) {
-      lastTouchEvent = nativeEvent.timeStamp;
-    } else {
-      if (lastTouchEvent && (nativeEvent.timeStamp - lastTouchEvent) < ignoreMouseThreshold) {
-        return null;
-      }
-    }
+    lastTouchEvent = nativeEvent.timeStamp;
 
     if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
       return null;
